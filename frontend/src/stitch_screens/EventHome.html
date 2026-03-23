@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-container": "#df714e",
+              "primary-fixed-dim": "#ffb3ae",
+              "on-error": "#690005",
+              "tertiary-fixed": "#ffdbd0",
+              "outline": "#ab8986",
+              "error-container": "#93000a",
+              "on-tertiary": "#5e1700",
+              "secondary-container": "#474746",
+              "on-secondary-fixed-variant": "#474746",
+              "surface-container-highest": "#353534",
+              "surface": "#131313",
+              "on-secondary": "#303030",
+              "secondary-fixed-dim": "#c8c6c5",
+              "on-surface-variant": "#e4beba",
+              "surface-container-low": "#1c1b1b",
+              "secondary-fixed": "#e4e2e1",
+              "on-primary-container": "#5c0008",
+              "surface-variant": "#353534",
+              "outline-variant": "#5b403e",
+              "inverse-surface": "#e5e2e1",
+              "inverse-primary": "#ba1724",
+              "surface-container-lowest": "#0e0e0e",
+              "surface-bright": "#3a3939",
+              "secondary": "#c8c6c5",
+              "primary-fixed": "#ffdad7",
+              "on-primary": "#68000b",
+              "on-primary-fixed-variant": "#930014",
+              "on-surface": "#e5e2e1",
+              "inverse-on-surface": "#313030",
+              "primary": "#ffb3ae",
+              "surface-tint": "#ffb3ae",
+              "on-tertiary-container": "#521300",
+              "on-primary-fixed": "#410004",
+              "on-secondary-fixed": "#1b1c1c",
+              "background": "#131313",
+              "tertiary-fixed-dim": "#ffb59e",
+              "surface-container-high": "#2a2a2a",
+              "on-background": "#e5e2e1",
+              "surface-container": "#201f1f",
+              "primary-container": "#ff5352",
+              "on-error-container": "#ffdad6",
+              "on-secondary-container": "#b6b5b4",
+              "on-tertiary-fixed": "#3a0b00",
+              "tertiary": "#ffb59e",
+              "surface-dim": "#131313",
+              "error": "#ffb4ab",
+              "on-tertiary-fixed-variant": "#7f2a0d"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: rgba(53, 53, 52, 0.4);
+        backdrop-filter: blur(20px);
+      }
+      .obsidian-gradient {
+        background: linear-gradient(135deg, #ffb3ae 0%, #ff5352 100%);
+      }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-[#131313]/40 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.5)] flex justify-between items-center px-6 py-4 max-w-full">
+<div class="text-2xl font-black tracking-tighter text-[#ffb3ae] font-headline">METAVENT</div>
+<div class="hidden md:flex items-center gap-8 font-headline font-bold tracking-tight">
+<a class="text-[#ffb3ae] border-b-2 border-[#ffb3ae] pb-1 transition-all duration-300" href="#">Explore</a>
+<a class="text-[#e5e2e1] hover:text-[#ffb3ae] transition-colors transition-all duration-300" href="#">Marketplace</a>
+<a class="text-[#e5e2e1] hover:text-[#ffb3ae] transition-colors transition-all duration-300" href="#">Drops</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden lg:flex items-center gap-2 px-6 py-2 rounded-xl obsidian-gradient text-on-primary-fixed font-headline font-bold active:scale-95 duration-200 hover:opacity-80 transition-all">
+                Connect Wallet
+            </button>
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center overflow-hidden">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="Abstract geometric user avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBplddBLZFPMpp90_IdZGz_cMIsKEfAI4i0n2egPMhz9fHy25LSBaqTfL03n_bMzHrTE2QBJ70-IsgKxRoneIn_7kQMfZaeGh4OSyIOEYq7m-sCKSqY80Y8Y5x1y6_GIMdslfctILp13UBr6-oQrdPxq7DF6D9LhoYANwfn1WwWkS7hoZALAtt0ILoussfhl0TbMRxjbun_C2-O8ZdjHGqXX323Y4UehVxYnrI0i1LePStzzb8OGKuynBRcI9tkypB5Q6wx5o6JFi-o"/>
+</div>
+</div>
+</nav>
+<main class="pt-24 pb-12">
+<!-- Hero Section -->
+<section class="relative px-6 py-12 lg:py-24 overflow-hidden">
+<div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 relative z-10">
+<div class="flex-1 space-y-8">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high border border-primary/20 text-primary text-sm font-label uppercase tracking-widest">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        Live Now: Genesis Drop
+                    </div>
+<h1 class="text-6xl md:text-8xl font-headline font-bold tracking-tighter leading-[0.9]">
+                        CYBER <br/>
+<span class="text-transparent bg-clip-text obsidian-gradient">SONIC 2024</span>
+</h1>
+<p class="text-on-surface-variant text-lg md:text-xl max-w-lg leading-relaxed">
+                        The world's first fully tokenized immersive audio festival. Own your entry, trade your experience, and unlock exclusive backstage meta-vaults.
+                    </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button class="px-8 py-4 rounded-xl obsidian-gradient text-on-primary-fixed font-headline font-bold text-lg hover:shadow-[0_0_30px_rgba(255,179,174,0.3)] transition-all active:scale-95">
+                            Get Tickets
+                        </button>
+<button class="px-8 py-4 rounded-xl border border-outline-variant hover:bg-surface-container-low transition-all font-headline font-bold text-lg active:scale-95">
+                            View Collection
+                        </button>
+</div>
+</div>
+<div class="flex-1 relative group w-full lg:w-auto">
+<div class="absolute -inset-4 obsidian-gradient opacity-20 blur-3xl rounded-full group-hover:opacity-30 transition-opacity"></div>
+<div class="relative glass-card rounded-2xl overflow-hidden border border-outline-variant/30 aspect-[4/5] shadow-2xl">
+<img alt="Cyber Sonic NFT" class="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700" data-alt="Futuristic neon holographic event ticket card" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxhd1JSfQLuah8r1jYMfc-X-vKX49qCW0r-LQ1GP-649STld8WWqddQ4tULFtvkhiCxe8TA1E8Unw8CT3xZnyjc9q6rdcIKLpQ7o8MMmjsgU8h4P-E0FjdWkrMX-vPJy9nTzfKlaJrW6-8F0-6yibVVy-zMWJQv0KGLcy6mrRZ6XWpZCkx_7wHzsjvXBiZTJ9luK73-UtSRGpvWsJm1e9L0Lt9bMavWrViGj9An1OSBm3VdMiK_l0R8xXm1Wv57rBZNnqmqLCdarVt"/>
+<div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-surface to-transparent">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-primary font-headline font-bold text-2xl">#001 GENESIS</p>
+<p class="text-on-surface-variant font-label">Floor: 1.25 ETH</p>
+</div>
+<div class="text-right">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Background Decoration Text -->
+<div class="absolute top-20 -right-20 opacity-[0.03] pointer-events-none select-none">
+<h2 class="text-[20rem] font-headline font-black leading-none">FUTURE</h2>
+</div>
+</section>
+<!-- Search & Filter Bar -->
+<section class="px-6 py-12">
+<div class="max-w-7xl mx-auto">
+<div class="glass-card border border-outline-variant/20 rounded-2xl p-2 flex flex-col md:flex-row gap-2">
+<div class="flex-1 flex items-center px-4 gap-3 bg-surface-container-lowest rounded-xl min-h-[56px]">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-on-surface w-full font-body placeholder:text-outline/50" placeholder="Search events, venues, or artists..." type="text"/>
+</div>
+<div class="flex items-center px-4 gap-3 bg-surface-container-lowest rounded-xl min-h-[56px] min-w-[200px]">
+<span class="material-symbols-outlined text-outline">calendar_today</span>
+<select class="bg-transparent border-none focus:ring-0 text-on-surface w-full font-label appearance-none">
+<option>All Dates</option>
+<option>This Weekend</option>
+<option>Next Month</option>
+</select>
+</div>
+<button class="obsidian-gradient text-on-primary-fixed font-headline font-bold px-8 rounded-xl min-h-[56px] active:scale-95 transition-all">
+                        Explore Events
+                    </button>
+</div>
+</div>
+</section>
+<!-- Trending Grid -->
+<section class="px-6 py-12">
+<div class="max-w-7xl mx-auto space-y-12">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-4xl font-headline font-bold tracking-tight">Trending <span class="text-primary">Experiences</span></h2>
+<p class="text-on-surface-variant">Handpicked digital collectibles for the most exclusive events.</p>
+</div>
+<a class="hidden md:flex items-center gap-2 text-primary font-bold hover:opacity-70 transition-all" href="#">
+                        View All <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Event Card 1 -->
+<div class="bg-surface-container-high rounded-xl overflow-hidden group hover:-translate-y-2 transition-transform duration-300">
+<div class="aspect-video relative overflow-hidden">
+<img alt="Event" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="High energy concert with colorful stage lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs8nAxm928X3RmLopyJ7OqyPtXyGolQ-lXvD_5OggZ13qxxbfcoDYdPxq46apJJasMGz5TXc_RA-_ClMT3zMCHnh1NA_-3U7LM6rj7DczeXJXih_MB8H2IWB0O-CRUCmsEXQLpRYWi4Fgfc8_pio0ueFRhcEBqXkXdYT4sGDRk8mhvnTPohwIJlfWMF5uUZV6QX9qwnomfUFkxJXvBmV9fQ0PXsRQLlcOZbkv75AdyR_UypxHb9E-knNUFsu__t37e9Jy4mXxxD_pm"/>
+<div class="absolute top-4 right-4 px-3 py-1 rounded-full bg-surface/80 backdrop-blur-md text-primary text-xs font-bold border border-primary/30">
+                                HOT
+                            </div>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-xl font-headline font-bold">Neon Pulse Tokyo</h3>
+<p class="text-sm text-on-tertiary-fixed-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span> Shibuya District
+                                    </p>
+</div>
+<div class="text-right">
+<p class="text-xs text-on-surface-variant font-label">FROM</p>
+<p class="text-primary font-bold">0.45 ETH</p>
+</div>
+</div>
+<button class="w-full py-3 rounded-lg border border-outline-variant hover:border-primary/50 transition-colors font-headline font-bold text-sm">
+                                Explore Tickets
+                            </button>
+</div>
+</div>
+<!-- Event Card 2 -->
+<div class="bg-surface-container-high rounded-xl overflow-hidden group hover:-translate-y-2 transition-transform duration-300">
+<div class="aspect-video relative overflow-hidden">
+<img alt="Event" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Cyberpunk themed tech conference stage" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhx2yBpiMctL8x--EoFFkiC8DhiCG3RpN1Rz3a-tXWDfhoRUG55nigR45uDijFSyI4cWiO2UMl4wg5cOOG2e-kirymeI7OmZjJFvdC9AyfqIK9U6SZsnqcZ0Lf-rHazE7aPaiTVv5rlsaBNYbkRm0KNAWngUdTAe2w6sLXMEHDb68aWO6MVsjaZ5NOVrtfWYGmUZZYiTb6z_y6dagtgoWzOpHPF0lN6Tc9fZf-zt09L8TWFW9K0BcA2o9oBYDIGFNTsckrxEjEhmSX"/>
+<div class="absolute top-4 right-4 px-3 py-1 rounded-full bg-surface/80 backdrop-blur-md text-on-surface text-xs font-bold border border-outline-variant">
+                                2 DAYS LEFT
+                            </div>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-xl font-headline font-bold">Meta-Logic Summit</h3>
+<p class="text-sm text-on-tertiary-fixed-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span> Virtual Arena
+                                    </p>
+</div>
+<div class="text-right">
+<p class="text-xs text-on-surface-variant font-label">FROM</p>
+<p class="text-primary font-bold">0.12 ETH</p>
+</div>
+</div>
+<button class="w-full py-3 rounded-lg border border-outline-variant hover:border-primary/50 transition-colors font-headline font-bold text-sm">
+                                Explore Tickets
+                            </button>
+</div>
+</div>
+<!-- Event Card 3 -->
+<div class="bg-surface-container-high rounded-xl overflow-hidden group hover:-translate-y-2 transition-transform duration-300">
+<div class="aspect-video relative overflow-hidden">
+<img alt="Event" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Elegant outdoor night party with lanterns" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEhEM3YnxbmywRlKNG66GHYlxdsx5ut4iGLDgSrpwVqsBthaQw0UeldFHGpgIi0HgDCeJWVO6G52MgkYm-3e4SbmEhfEyhMpNswMrtV0TUxHfnUVspcoc2acoKG1_nW3jTX2TmZNzdsAaDYeUAjCBx-gpDz5LtZvlMD8GBgG1gGViAJocN_nM6jE71fJsRk2KPLfIlg4OY4uzQpiFzApgVJhKZJMv-RxVXMODRjp8CKLTGFG4LkwphVpkVkxwxEVtTp75H4NP6Ktgh"/>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-xl font-headline font-bold">Velvet Night NFT</h3>
+<p class="text-sm text-on-tertiary-fixed-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span> Paris, FR
+                                    </p>
+</div>
+<div class="text-right">
+<p class="text-xs text-on-surface-variant font-label">FROM</p>
+<p class="text-primary font-bold">0.88 ETH</p>
+</div>
+</div>
+<button class="w-full py-3 rounded-lg border border-outline-variant hover:border-primary/50 transition-colors font-headline font-bold text-sm">
+                                Explore Tickets
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- How It Works (Bento Grid Style) -->
+<section class="px-6 py-24">
+<div class="max-w-7xl mx-auto space-y-16">
+<div class="text-center space-y-4">
+<h2 class="text-5xl font-headline font-bold tracking-tighter">Your <span class="text-primary">Gateway</span> To Reality</h2>
+<p class="text-on-surface-variant max-w-2xl mx-auto">Ticketing reimagined for the decentralized era. Secure, tradable, and purely digital.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Bento Item 1 -->
+<div class="md:col-span-2 glass-card rounded-2xl p-8 border border-outline-variant/30 flex flex-col md:flex-row items-center gap-8">
+<div class="flex-1 space-y-4">
+<div class="w-12 h-12 rounded-xl obsidian-gradient flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-fixed" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<h3 class="text-2xl font-headline font-bold">Connect &amp; Discover</h3>
+<p class="text-on-surface-variant">Sync your wallet to access premium drops. No registration required—your identity is your keys.</p>
+</div>
+<div class="flex-1 flex justify-center">
+<div class="w-48 h-48 rounded-full bg-primary/10 border-4 border-dashed border-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-6xl text-primary animate-pulse">link</span>
+</div>
+</div>
+</div>
+<!-- Bento Item 2 -->
+<div class="glass-card rounded-2xl p-8 border border-outline-variant/30 space-y-4">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">token</span>
+</div>
+<h3 class="text-2xl font-headline font-bold">Mint Your Access</h3>
+<p class="text-on-surface-variant">Every ticket is a unique NFT on-chain. Transparent, verifiable, and permanent.</p>
+</div>
+<!-- Bento Item 3 -->
+<div class="glass-card rounded-2xl p-8 border border-outline-variant/30 space-y-4">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">swap_horiz</span>
+</div>
+<h3 class="text-2xl font-headline font-bold">Trade Freely</h3>
+<p class="text-on-surface-variant">Plans changed? List your ticket on our secondary marketplace in seconds.</p>
+</div>
+<!-- Bento Item 4 -->
+<div class="md:col-span-2 glass-card rounded-2xl p-8 border border-outline-variant/30 flex flex-col md:flex-row items-center gap-8">
+<div class="flex-1 flex justify-center order-2 md:order-1">
+<div class="relative w-full aspect-video rounded-xl overflow-hidden">
+<img alt="IRL Perks" class="w-full h-full object-cover" data-alt="Close up of a smart phone showing a QR code ticket" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3Ll8muNs2S_DtbPAwj1Pwc2C8fPw-iTyeOkavNk_ZohMEF8VjzHJmQ3elEXCClEEGr4oE47MZgAwWxfxvJzSgExZ0K5bmxf9zH_J-viec2c2DJmkyVcGeuMDc0J79MpW0Nvbr17cRfeqWekIknXcxw5PmAmJS_Yybw9h-ZsFSq5E6BP-35RcZI-IgmNiMllmLAGn6QFHHgZFRcWyq3-OpJyEQ6DJgY7tebKa9x7Yu6rYyekwP_J_SkG0q0VlVNBkLGCk5mquTWZQ7"/>
+<div class="absolute inset-0 obsidian-gradient opacity-20"></div>
+</div>
+</div>
+<div class="flex-1 space-y-4 order-1 md:order-2">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">redeem</span>
+</div>
+<h3 class="text-2xl font-headline font-bold">Unlock IRL Perks</h3>
+<p class="text-on-surface-variant">Holders get more than just entry. Air-dropped merchandise, drink vouchers, and post-event memories.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#0e0e0e] w-full py-12 px-8 mt-auto flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="space-y-2 text-center md:text-left">
+<div class="text-lg font-bold text-[#ffb3ae] font-headline">METAVENT</div>
+<p class="font-['Manrope'] text-sm tracking-wide opacity-60 text-[#e5e2e1]">© 2024 METAVENT. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="text-[#e5e2e1] hover:text-[#ffb3ae] transition-colors font-['Manrope'] text-sm tracking-wide opacity-60" href="#">Terms</a>
+<a class="text-[#e5e2e1] hover:text-[#ffb3ae] transition-colors font-['Manrope'] text-sm tracking-wide opacity-60" href="#">Privacy</a>
+<a class="text-[#e5e2e1] hover:text-[#ffb3ae] transition-colors font-['Manrope'] text-sm tracking-wide opacity-60" href="#">Discord</a>
+<a class="text-[#e5e2e1] hover:text-[#ffb3ae] transition-colors font-['Manrope'] text-sm tracking-wide opacity-60" href="#">Twitter</a>
+<a class="text-[#e5e2e1] hover:text-[#ffb3ae] transition-colors font-['Manrope'] text-sm tracking-wide opacity-60" href="#">Support</a>
+</div>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center hover:bg-primary/20 cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-lg opacity-60">share</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center hover:bg-primary/20 cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-lg opacity-60">rss_feed</span>
+</div>
+</div>
+</footer>
+</body></html>
