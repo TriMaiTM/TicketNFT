@@ -27,3 +27,22 @@ exports.getTicketById = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+exports.mintTicket = async (req, res) => {
+  try {
+    const { eventId, tokenId, ownerAddress } = req.body;
+    
+    if (!eventId || tokenId === undefined || !ownerAddress) {
+      return res.status(400).json({ success: false, error: 'eventId, tokenId, and ownerAddress are required' });
+    }
+
+    const newTicket = await Ticket.create({
+      eventId,
+      tokenId,
+      ownerAddress: ownerAddress.toLowerCase()
+    });
+
+    res.status(201).json({ success: true, data: newTicket });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};

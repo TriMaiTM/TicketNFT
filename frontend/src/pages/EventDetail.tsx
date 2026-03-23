@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useWeb3 } from '../hooks/useWeb3';
+import { getTicketNFTContract } from '../hooks/useContracts';
+import { parseEther } from 'ethers';
 
 interface EventData {
   _id: string;
@@ -17,6 +20,8 @@ interface EventData {
 const EventDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [event, setEvent] = useState<EventData | null>(null);
+  const { walletAddress, signer } = useWeb3();
+  const [isMinting, setIsMinting] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -127,8 +132,65 @@ const EventDetail: React.FC = () => {
               </div>
               
               <div className="space-y-4">
-                <button className="w-full obsidian-gradient text-on-primary-fixed py-4 rounded-xl font-headline font-extrabold text-lg shadow-[0_10px_30px_rgba(255,83,82,0.3)] hover:opacity-90 active:scale-95 transition-all">
-                  BUY TICKET
+                <button 
+                  onClick={async () => {
+                    if (!walletAddress || !signer) {
+                      alert("Please connect your wallet first via the Header.");
+                      return;
+                    }
+                    if (!event) return;
+
+                    try {
+                      setIsMinting(true);
+                      const ticketNFTContract = getTicketNFTContract(signer);
+                      const priceEthEth = event.priceEth.toString();
+                      
+                      const tx = await ticketNFTContract.mintTicket(event._id, {
+                        value: parseEther(priceEthEth)
+                      });
+                      
+                      const receipt = await tx.wait();
+                      
+                      // Extract the tokenId from the Transfer event
+                      let mintedTokenId = Math.floor(Math.random() * 10000); 
+                      for (const log of receipt.logs) {
+                        try {
+                          const parsedLog = ticketNFTContract.interface.parseLog(log);
+                          if (parsedLog && parsedLog.name === 'Transfer') {
+                            mintedTokenId = Number(parsedLog.args[2]);
+                            break;
+                          }
+                        } catch(e) {}
+                      }
+
+                      // Save to backend
+                      const response = await fetch('http://localhost:5000/api/tickets/mint', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          eventId: event._id,
+                          tokenId: mintedTokenId,
+                          ownerAddress: walletAddress
+                        })
+                      });
+                      
+                      const data = await response.json();
+                      if (data.success) {
+                        alert('Ticket successfully minted and saved!');
+                      } else {
+                        alert('Ticket minted on chain, but failed to save to database.');
+                      }
+                    } catch (err: any) {
+                      console.error("Minting failed", err);
+                      alert("Minting failed: " + (err.message || "Unknown error"));
+                    } finally {
+                      setIsMinting(false);
+                    }
+                  }}
+                  disabled={isMinting}
+                  className={`w-full ${isMinting ? 'bg-surface-container text-on-surface-variant' : 'obsidian-gradient text-on-primary-fixed shadow-[0_10px_30px_rgba(255,83,82,0.3)] hover:opacity-90 active:scale-95'} py-4 rounded-xl font-headline font-extrabold text-lg transition-all`}
+                >
+                  {isMinting ? 'MINTING...' : 'BUY TICKET'}
                 </button>
               </div>
 

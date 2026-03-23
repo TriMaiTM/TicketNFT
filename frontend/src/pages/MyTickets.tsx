@@ -3,6 +3,9 @@ import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useWeb3 } from '../hooks/useWeb3';
+import { getTicketNFTContract, getMarketplaceContract } from '../hooks/useContracts';
+import { TICKET_NFT_ADDRESS, MARKETPLACE_ADDRESS } from '../config/contracts';
+import { parseEther } from 'ethers';
 
 interface EventData {
   _id: string;
@@ -20,9 +23,61 @@ interface TicketData {
 }
 
 const MyTickets: React.FC = () => {
-  const { walletAddress } = useWeb3();
+  const { walletAddress, signer } = useWeb3();
   const [tickets, setTickets] = useState<TicketData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [listingId, setListingId] = useState<string | null>(null);
+
+  const handleListForSale = async (ticket: TicketData) => {
+    if (!walletAddress || !signer) {
+      alert("Please connect your wallet first via the Header.");
+      return;
+    }
+    
+    const priceInput = prompt("Enter listing price in ETH:", "0.1");
+    if (!priceInput || isNaN(Number(priceInput))) {
+      if (priceInput !== null) alert("Invalid price");
+      return;
+    }
+
+    try {
+      setListingId(ticket._id);
+      const ticketNFTContract = getTicketNFTContract(signer);
+      const marketplaceContract = getMarketplaceContract(signer);
+      const priceWei = parseEther(priceInput);
+
+      // 1. Approve MarketPlace to manage the token
+      const approveTx = await ticketNFTContract.approve(MARKETPLACE_ADDRESS, ticket.tokenId);
+      await approveTx.wait();
+
+      // 2. List on Marketplace
+      const listTx = await marketplaceContract.listTicket(TICKET_NFT_ADDRESS, ticket.tokenId, priceWei);
+      await listTx.wait();
+
+      // 3. Save listing to database
+      const response = await fetch('http://localhost:5000/api/marketplace/list', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ticketId: ticket._id,
+          priceEth: Number(priceInput),
+          sellerAddress: walletAddress
+        })
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        alert("Ticket successfully listed on the Marketplace!");
+      } else {
+        alert("Ticket listed on chain, but failed to save to database.");
+      }
+    } catch (err: any) {
+      console.error("Listing failed", err);
+      alert("Listing failed: " + (err.message || "Unknown error"));
+    } finally {
+      setListingId(null);
+    }
+  };
 
   // Use a mock address for testing if wallet is not connected,
   // since this is a demo environment.
@@ -144,7 +199,13 @@ const MyTickets: React.FC = () => {
                             </div>
                             <div className="flex gap-3">
                               <button className="bg-on-surface text-surface px-6 py-3 rounded-lg font-headline font-bold active:scale-95 transition-all">View QR</button>
-                              <button className="border border-outline-variant/40 hover:border-primary/60 text-on-surface px-6 py-3 rounded-lg font-headline font-bold active:scale-95 transition-all">List for Sale</button>
+                              <button 
+                                onClick={() => handleListForSale(ticket)}
+                                disabled={listingId === ticket._id}
+                                className={`${listingId === ticket._id ? 'border-outline/40 text-on-surface/50' : 'border-outline-variant/40 hover:border-primary/60 text-on-surface'} border px-6 py-3 rounded-lg font-headline font-bold active:scale-95 transition-all`}
+                              >
+                                {listingId === ticket._id ? 'Listing...' : 'List for Sale'}
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -163,7 +224,13 @@ const MyTickets: React.FC = () => {
                         <p className="text-sm text-on-surface-variant mb-6 truncate">{new Date(event.date).toLocaleDateString()} • {event.location}</p>
                         <div className="mt-auto space-y-3">
                           <button className="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary-fixed py-3 rounded-lg font-headline font-bold transition-all hover:opacity-90 active:scale-[0.98]">View QR Code</button>
-                          <button className="w-full text-sm font-bold opacity-60 hover:opacity-100 transition-all py-2">List for Sale</button>
+                          <button 
+                            onClick={() => handleListForSale(ticket)}
+                            disabled={listingId === ticket._id}
+                            className={`w-full text-sm font-bold opacity-60 hover:opacity-100 transition-all py-2 ${listingId === ticket._id ? 'text-on-surface/50' : ''}`}
+                          >
+                            {listingId === ticket._id ? 'Listing...' : 'List for Sale'}
+                          </button>
                         </div>
                       </div>
                     );

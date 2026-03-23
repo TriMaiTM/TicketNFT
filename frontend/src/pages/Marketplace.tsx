@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useWeb3 } from '../hooks/useWeb3';
+import { getMarketplaceContract } from '../hooks/useContracts';
+import { TICKET_NFT_ADDRESS } from '../config/contracts';
+import { parseEther } from 'ethers';
 
 interface EventData {
   _id: string;
@@ -28,6 +32,51 @@ interface ListingData {
 const Marketplace: React.FC = () => {
   const [listings, setListings] = useState<ListingData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [purchasingId, setPurchasingId] = useState<string | null>(null);
+  const { walletAddress, signer } = useWeb3();
+
+  const handleBuyTicket = async (listing: ListingData) => {
+    if (!walletAddress || !signer) {
+      alert("Please connect your wallet first via the Header.");
+      return;
+    }
+    
+    try {
+      setPurchasingId(listing._id);
+      const marketplaceContract = getMarketplaceContract(signer);
+      const priceWei = parseEther(listing.priceEth.toString());
+
+      // Call buyTicket on the Marketplace contract
+      const tx = await marketplaceContract.buyTicket(TICKET_NFT_ADDRESS, listing.ticketId.tokenId, {
+        value: priceWei
+      });
+      
+      await tx.wait();
+
+      // Update backend database
+      const response = await fetch('http://localhost:5000/api/marketplace/buy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          listingId: listing._id,
+          buyerAddress: walletAddress
+        })
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        alert("Ticket successfully purchased! It has been added to your collection.");
+        setListings(prev => prev.filter(l => l._id !== listing._id));
+      } else {
+        alert("Ticket bought on-chain, but failed to update backend database.");
+      }
+    } catch(err: any) {
+      console.error("Purchase failed", err);
+      alert("Purchase failed: " + (err.message || "Unknown error"));
+    } finally {
+      setPurchasingId(null);
+    }
+  };
 
   useEffect(() => {
     fetch('http://localhost:5000/api/marketplace')
@@ -141,9 +190,18 @@ const Marketplace: React.FC = () => {
                           <span className="text-[10px] text-outline uppercase font-bold block mb-1">Asking Price</span>
                           <span className="text-xl font-mono font-bold text-primary">{listing.priceEth} ETH</span>
                         </div>
-                        <Link to={`/event/${event._id}`} className="block text-center bg-on-surface text-surface py-2 px-6 rounded-lg font-bold hover:opacity-90 active:scale-95 transition-all">
-                          View Event
-                        </Link>
+                        <div className="flex gap-2">
+                          <Link to={`/event/${event._id}`} className="block text-center bg-surface-container-highest text-on-surface py-2 px-4 rounded-lg font-bold hover:opacity-90 active:scale-95 transition-all text-sm">
+                            View
+                          </Link>
+                          <button 
+                            onClick={() => handleBuyTicket(listing)}
+                            disabled={purchasingId === listing._id}
+                            className={`block text-center ${purchasingId === listing._id ? 'bg-surface-container text-on-surface-variant' : 'bg-on-surface text-surface hover:opacity-90 active:scale-95'} py-2 px-6 rounded-lg font-bold transition-all text-sm`}
+                          >
+                            {purchasingId === listing._id ? 'Buying...' : 'Buy Now'}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
