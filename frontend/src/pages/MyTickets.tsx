@@ -1,10 +1,48 @@
-import React from 'react';
+
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useWeb3 } from '../hooks/useWeb3';
 
+interface EventData {
+  _id: string;
+  title: string;
+  location: string;
+  date: string;
+  imageUrl: string;
+}
+
+interface TicketData {
+  _id: string;
+  tokenId: number;
+  eventId: EventData;
+  ownerAddress: string;
+}
+
 const MyTickets: React.FC = () => {
   const { walletAddress } = useWeb3();
+  const [tickets, setTickets] = useState<TicketData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Use a mock address for testing if wallet is not connected,
+  // since this is a demo environment.
+  const effectiveAddress = walletAddress || "0x1234567890abcdef1234567890abcdef12345678";
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`http://localhost:5000/api/tickets/my-tickets?walletAddress=${effectiveAddress}`)
+      .then(res => res.json())
+      .then(resData => {
+        if (resData.success) {
+          setTickets(resData.data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch tickets", err);
+        setLoading(false);
+      });
+  }, [effectiveAddress]);
 
   return (
     <>
@@ -63,61 +101,75 @@ const MyTickets: React.FC = () => {
             {/* Bento Grid - Upcoming */}
             <section className="mb-16">
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-headline font-bold text-primary">Upcoming Events</h2>
+                <h2 className="text-2xl font-headline font-bold text-primary">Your Collection</h2>
                 <span className="h-[1px] flex-grow mx-8 bg-outline-variant/20 hidden md:block"></span>
-                <div className="flex gap-2">
-                  <button className="p-2 bg-surface-container-low hover:bg-surface-container-high transition-colors rounded-lg">
-                    <span className="material-symbols-outlined">chevron_left</span>
-                  </button>
-                  <button className="p-2 bg-surface-container-low hover:bg-surface-container-high transition-colors rounded-lg">
-                    <span className="material-symbols-outlined">chevron_right</span>
-                  </button>
-                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                {/* Featured Ticket (Large) */}
-                <div className="md:col-span-8 group relative rounded-xl overflow-hidden bg-surface-container-high">
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10"></div>
-                  <img alt="Cyber Concert" className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDpEO9iVj4JR6qhY3Nt46I0POr3-e2-dgX2js6X2Wez30DHLctv0PWcIdW5C7DxasrT6jHf9_PMqnDr3WafWy9wFWLaKe7bU9yrGd0u9PdrNDzNnPwzJTbQjpFvtqTPY0XwgoMjcQ_vVk0C_wyZgGuq4LSGwgUORePLQoVsOL69NW4EqDF-my8NFMxmvJjDI-pg7NxYBq4eQ6Oj_OiHMnps62kwWVVSbVtZXtYtZ1Yp4EK8Cp2aZ62a-PIeZivpnfZkOFeZhXFtfhu" />
-                  <div className="absolute bottom-0 left-0 p-8 z-20 w-full flex flex-col md:flex-row md:items-end justify-between gap-6">
-                    <div>
-                      <span className="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4 inline-block">VIP Pass</span>
-                      <h3 className="text-4xl font-headline font-black tracking-tight text-on-surface mb-2">NEON VOID: SYMPHONY</h3>
-                      <div className="flex items-center gap-4 text-on-surface-variant">
-                        <div className="flex items-center gap-1">
-                          <span className="material-symbols-outlined text-sm">calendar_today</span>
-                          <span className="text-sm font-label">OCT 24, 2024</span>
+              {loading ? (
+                <div className="flex justify-center items-center h-64">
+                  <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
+                </div>
+              ) : tickets.length === 0 ? (
+                <div className="text-center py-24 bg-surface-container-high rounded-xl border border-outline-variant/10">
+                  <span className="material-symbols-outlined text-6xl text-on-surface-variant mb-4">confirmation_number</span>
+                  <h3 className="text-xl font-headline font-bold mb-2">No tickets yet</h3>
+                  <p className="text-on-surface-variant">You haven't added any tickets to your collection.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                  {tickets.map((ticket, index) => {
+                    const event = ticket.eventId;
+                    // Feature the first ticket by making it span 8 columns, others 4
+                    const isFeatured = index === 0;
+                    
+                    if (isFeatured) {
+                      return (
+                        <div key={ticket._id} className="md:col-span-8 group relative rounded-xl overflow-hidden bg-surface-container-high">
+                          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10"></div>
+                          <img alt={event.title} className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700" src={event.imageUrl} />
+                          <div className="absolute bottom-0 left-0 p-8 z-20 w-full flex flex-col md:flex-row md:items-end justify-between gap-6">
+                            <div>
+                              <span className="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4 inline-block">Token #{ticket.tokenId}</span>
+                              <h3 className="text-4xl font-headline font-black tracking-tight text-on-surface mb-2">{event.title}</h3>
+                              <div className="flex items-center gap-4 text-on-surface-variant">
+                                <div className="flex items-center gap-1">
+                                  <span className="material-symbols-outlined text-sm">calendar_today</span>
+                                  <span className="text-sm font-label">{new Date(event.date).toLocaleDateString()}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <span className="material-symbols-outlined text-sm">location_on</span>
+                                  <span className="text-sm font-label">{event.location}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex gap-3">
+                              <button className="bg-on-surface text-surface px-6 py-3 rounded-lg font-headline font-bold active:scale-95 transition-all">View QR</button>
+                              <button className="border border-outline-variant/40 hover:border-primary/60 text-on-surface px-6 py-3 rounded-lg font-headline font-bold active:scale-95 transition-all">List for Sale</button>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <span className="material-symbols-outlined text-sm">location_on</span>
-                          <span className="text-sm font-label">Virtual Arena 01</span>
+                      );
+                    }
+
+                    return (
+                      <div key={ticket._id} className="md:col-span-4 rounded-xl bg-surface-container-high p-6 flex flex-col border border-outline-variant/10 hover:border-primary/30 transition-all">
+                        <div className="aspect-[4/5] rounded-lg overflow-hidden mb-6 relative group">
+                          <img alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src={event.imageUrl} />
+                          <div className="absolute top-4 right-4 bg-surface/80 backdrop-blur-md px-3 py-1 rounded-full text-primary border border-primary/20">
+                            <span className="text-xs font-headline font-bold tracking-widest">#{ticket.tokenId}</span>
+                          </div>
+                        </div>
+                        <h3 className="text-xl font-headline font-bold mb-1 truncate">{event.title}</h3>
+                        <p className="text-sm text-on-surface-variant mb-6 truncate">{new Date(event.date).toLocaleDateString()} • {event.location}</p>
+                        <div className="mt-auto space-y-3">
+                          <button className="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary-fixed py-3 rounded-lg font-headline font-bold transition-all hover:opacity-90 active:scale-[0.98]">View QR Code</button>
+                          <button className="w-full text-sm font-bold opacity-60 hover:opacity-100 transition-all py-2">List for Sale</button>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex gap-3">
-                      <button className="bg-on-surface text-surface px-6 py-3 rounded-lg font-headline font-bold active:scale-95 transition-all">Enter Gate</button>
-                      <button className="border border-outline-variant/40 hover:border-primary/60 text-on-surface px-6 py-3 rounded-lg font-headline font-bold active:scale-95 transition-all">List for Sale</button>
-                    </div>
-                  </div>
+                    );
+                  })}
                 </div>
-
-                {/* Secondary Ticket (Tall) */}
-                <div className="md:col-span-4 rounded-xl bg-surface-container-high p-6 flex flex-col border border-outline-variant/10">
-                  <div className="aspect-[4/5] rounded-lg overflow-hidden mb-6 relative">
-                    <img alt="Art Exhibit" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbUUsvSOzjgudE1IqVjrvbcqy0Qb1o_oN7dBQn76CcbCg-43IDAsPoNL99WLI-JvfhIpzKQhHRswEg1zrbi0Kjn5jU7NUt29ltROO-KTZDrBHJ6P6YRQWeyFfbx8TcGQ8gEuSyan6DrS3pc7IBprfz6-rov-zXUz24glNjr-iN0GtHxqoUCmTaZQ1fmC2IakZ41tiySRiJs1--pxffIdY_edr5fWMs3WUT1KwcHATwbDRqwbnRoMh1eRQLn6x1REmkQJlOOaIQQDwH" />
-                    <div className="absolute top-4 right-4 bg-surface/80 backdrop-blur-md p-2 rounded-lg text-primary">
-                      <span className="text-xs font-headline font-bold tracking-widest">#8821</span>
-                    </div>
-                  </div>
-                  <h3 className="text-xl font-headline font-bold mb-1">Etheric Landscapes</h3>
-                  <p className="text-sm text-on-surface-variant mb-6">Digital Art Vernissage</p>
-                  <div className="mt-auto space-y-3">
-                    <button className="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary-fixed py-3 rounded-lg font-headline font-bold transition-all hover:opacity-90 active:scale-[0.98]">View QR Code</button>
-                    <button className="w-full text-sm font-bold opacity-60 hover:opacity-100 transition-all py-2">List for Sale</button>
-                  </div>
-                </div>
-              </div>
+              )}
             </section>
 
             {/* Past Events - Horizontal List */}

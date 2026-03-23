@@ -1,9 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
+interface EventData {
+  _id: string;
+  title: string;
+  location: string;
+  priceEth: number;
+  imageUrl: string;
+  status: string;
+}
+
 const Home: React.FC = () => {
+  const [events, setEvents] = useState<EventData[]>([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/events')
+      .then(res => res.json())
+      .then(resData => {
+        if (resData.success) {
+          setEvents(resData.data);
+        }
+      })
+      .catch(err => console.error("Failed to fetch events", err));
+  }, []);
+
   return (
     <>
       <Header />
@@ -71,83 +93,35 @@ const Home: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {/* Event Card 1 */}
-              <div className="bg-surface-container-high rounded-xl overflow-hidden group hover:-translate-y-2 transition-transform duration-300">
-                <div className="aspect-video relative overflow-hidden">
-                  <img alt="Neon Pulse Tokyo" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs8nAxm928X3RmLopyJ7OqyPtXyGolQ-lXvD_5OggZ13qxxbfcoDYdPxq46apJJasMGz5TXc_RA-_ClMT3zMCHnh1NA_-3U7LM6rj7DczeXJXih_MB8H2IWB0O-CRUCmsEXQLpRYWi4Fgfc8_pio0ueFRhcEBqXkXdYT4sGDRk8mhvnTPohwIJlfWMF5uUZV6QX9qwnomfUFkxJXvBmV9fQ0PXsRQLlcOZbkv75AdyR_UypxHb9E-knNUFsu__t37e9Jy4mXxxD_pm" />
-                  <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-surface/80 backdrop-blur-md text-primary text-xs font-bold border border-primary/30">
-                    HOT
+              {events.map((evt) => (
+                <div key={evt._id} className="bg-surface-container-high rounded-xl overflow-hidden group hover:-translate-y-2 transition-transform duration-300">
+                  <div className="aspect-video relative overflow-hidden">
+                    <img alt={evt.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src={evt.imageUrl} />
+                    {evt.status === 'UPCOMING' && (
+                      <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-surface/80 backdrop-blur-md text-on-surface text-xs font-bold border border-outline-variant">
+                        UPCOMING
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-6 space-y-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="text-xl font-headline font-bold">{evt.title}</h3>
+                        <p className="text-sm text-on-tertiary-fixed-variant flex items-center gap-1">
+                          <span className="material-symbols-outlined text-sm">location_on</span> {evt.location}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-on-surface-variant font-label">FROM</p>
+                        <p className="text-primary font-bold">{evt.priceEth} ETH</p>
+                      </div>
+                    </div>
+                    <Link to={`/event/${evt._id}`} className="block text-center w-full py-3 rounded-lg border border-outline-variant hover:border-primary/50 transition-colors font-headline font-bold text-sm">
+                      Explore Tickets
+                    </Link>
                   </div>
                 </div>
-                <div className="p-6 space-y-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-xl font-headline font-bold">Neon Pulse Tokyo</h3>
-                      <p className="text-sm text-on-tertiary-fixed-variant flex items-center gap-1">
-                        <span className="material-symbols-outlined text-sm">location_on</span> Shibuya District
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs text-on-surface-variant font-label">FROM</p>
-                      <p className="text-primary font-bold">0.45 ETH</p>
-                    </div>
-                  </div>
-                  <Link to="/event/1" className="block text-center w-full py-3 rounded-lg border border-outline-variant hover:border-primary/50 transition-colors font-headline font-bold text-sm">
-                    Explore Tickets
-                  </Link>
-                </div>
-              </div>
-
-              {/* Event Card 2 */}
-              <div className="bg-surface-container-high rounded-xl overflow-hidden group hover:-translate-y-2 transition-transform duration-300">
-                <div className="aspect-video relative overflow-hidden">
-                  <img alt="Meta-Logic Summit" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhx2yBpiMctL8x--EoFFkiC8DhiCG3RpN1Rz3a-tXWDfhoRUG55nigR45uDijFSyI4cWiO2UMl4wg5cOOG2e-kirymeI7OmZjJFvdC9AyfqIK9U6SZsnqcZ0Lf-rHazE7aPaiTVv5rlsaBNYbkRm0KNAWngUdTAe2w6sLXMEHDb68aWO6MVsjaZ5NOVrtfWYGmUZZYiTb6z_y6dagtgoWzOpHPF0lN6Tc9fZf-zt09L8TWFW9K0BcA2o9oBYDIGFNTsckrxEjEhmSX" />
-                  <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-surface/80 backdrop-blur-md text-on-surface text-xs font-bold border border-outline-variant">
-                    2 DAYS LEFT
-                  </div>
-                </div>
-                <div className="p-6 space-y-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-xl font-headline font-bold">Meta-Logic Summit</h3>
-                      <p className="text-sm text-on-tertiary-fixed-variant flex items-center gap-1">
-                        <span className="material-symbols-outlined text-sm">location_on</span> Virtual Arena
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs text-on-surface-variant font-label">FROM</p>
-                      <p className="text-primary font-bold">0.12 ETH</p>
-                    </div>
-                  </div>
-                  <Link to="/event/1" className="block text-center w-full py-3 rounded-lg border border-outline-variant hover:border-primary/50 transition-colors font-headline font-bold text-sm">
-                    Explore Tickets
-                  </Link>
-                </div>
-              </div>
-
-              {/* Event Card 3 */}
-              <div className="bg-surface-container-high rounded-xl overflow-hidden group hover:-translate-y-2 transition-transform duration-300">
-                <div className="aspect-video relative overflow-hidden">
-                  <img alt="Velvet Night NFT" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEhEM3YnxbmywRlKNG66GHYlxdsx5ut4iGLDgSrpwVqsBthaQw0UeldFHGpgIi0HgDCeJWVO6G52MgkYm-3e4SbmEhfEyhMpNswMrtV0TUxHfnUVspcoc2acoKG1_nW3jTX2TmZNzdsAaDYeUAjCBx-gpDz5LtZvlMD8GBgG1gGViAJocN_nM6jE71fJsRk2KPLfIlg4OY4uzQpiFzApgVJhKZJMv-RxVXMODRjp8CKLTGFG4LkwphVpkVkxwxEVtTp75H4NP6Ktgh" />
-                </div>
-                <div className="p-6 space-y-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-xl font-headline font-bold">Velvet Night NFT</h3>
-                      <p className="text-sm text-on-tertiary-fixed-variant flex items-center gap-1">
-                        <span className="material-symbols-outlined text-sm">location_on</span> Paris, FR
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs text-on-surface-variant font-label">FROM</p>
-                      <p className="text-primary font-bold">0.88 ETH</p>
-                    </div>
-                  </div>
-                  <Link to="/event/1" className="block text-center w-full py-3 rounded-lg border border-outline-variant hover:border-primary/50 transition-colors font-headline font-bold text-sm">
-                    Explore Tickets
-                  </Link>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
