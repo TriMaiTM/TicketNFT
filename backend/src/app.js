@@ -21,4 +21,8 @@ app.use('/api/events', eventRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/marketplace', marketplaceRoutes);
 
+// Setup Swagger UI Documentation
+const setupSwagger = require('./config/swagger');
+setupSwagger(app);
+
 module.exports = app;

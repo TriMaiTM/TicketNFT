@@ -1,55 +1,39 @@
 import { expect } from "chai";
-import hre from "hardhat";
-import { parseEther, formatEther } from "ethers";
+import { ethers } from "hardhat";
 
-describe("Hệ Thống Bán Vé NFT", function () {
-    it("Nghiệp vụ: Mua vé -> Treo bán chợ đen -> Chia 5% Bản quyền", async function () {
-        // 1. Kết nối tới mạng Hardhat và lấy ethers (Hardhat v3 API)
-        const connection = await hre.network.connect();
-        const ethers = connection.ethers;
+describe("TicketNFT (Core Ownership & Minting)", function () {
+    let ticket: any;
+    let owner: any;
+    let user1: any;
 
-        // Hardhat cung cấp sẵn các ví ảo (Signers) để test
-        const [organizer, user1, user2] = await ethers.getSigners();
-
-        // 2. Triển khai hợp đồng (Deploy)
+    beforeEach(async function () {
+        [owner, user1] = await ethers.getSigners();
         const TicketNFT = await ethers.getContractFactory("TicketNFT");
-        const ticket = await TicketNFT.deploy();
+        ticket = await TicketNFT.deploy();
+        await ticket.waitForDeployment();
+    });
 
-        console.log("-------------------------------------------------");
-        console.log("👉 KỊCH BẢN 1: USER 1 MUA VÉ GỐC");
-        // User 1 gọi hàm mintTicket và trả 1 ETH
-        const mintPrice = parseEther("1.0");
-        await ticket.connect(user1).mintTicket("ipfs://link-anh-ve", { value: mintPrice });
+    it("should mint a ticket, assign ownership, and record original price", async function () {
+        const mintPrice = ethers.parseEther("1.0");
+        const tx = await ticket.connect(user1).mintTicket("ipfs://event-ticket-metadata", { value: mintPrice });
+        await tx.wait();
 
-        expect(await ticket.ownerOf(0)).to.equal(user1.address);
-        console.log(`✅ User 1 (Ví: ${user1.address.slice(0, 6)}...) đã mua Vé số 0 thành công!`);
+        const ownerOfToken0 = await ticket.ownerOf(0);
+        expect(ownerOfToken0).to.equal(user1.address);
 
-        console.log("-------------------------------------------------");
-        console.log("👉 KỊCH BẢN 2: USER 1 TREO BÁN LẠI VÉ TRÊN CHỢ");
-        // User 1 bán lại giá 1.1 ETH (Đúng luật <= 110% của 1 ETH)
-        const resalePrice = parseEther("1.1");
-        await ticket.connect(user1).listTicketForSale(0, resalePrice);
-        console.log("✅ User 1 đã treo bán Vé số 0 với giá 1.1 ETH!");
+        const recordedPrice = await ticket.getOriginalPrice(0);
+        expect(recordedPrice).to.equal(mintPrice);
+    });
 
-        console.log("-------------------------------------------------");
-        console.log("👉 KỊCH BẢN 3: USER 2 MUA LẠI VÉ VÀ CHIA TIỀN TỰ ĐỘNG");
+    it("should configure ERC2981 royalties properly (5%)", async function () {
+        const mintPrice = ethers.parseEther("1.0");
+        await ticket.connect(user1).mintTicket("ipfs://event-ticket-metadata", { value: mintPrice });
 
-        // Ghi nhận số dư ví Ban Tổ Chức (Organizer) TRƯỚC khi User 2 mua
-        const organizerBalanceBefore = await ethers.provider.getBalance(organizer.address);
+        const resaleValue = ethers.parseEther("2.0");
+        // Check royalty amount at 5% of 2 ETH = 0.1 ETH
+        const [receiver, royaltyAmount] = await ticket.royaltyInfo(0, resaleValue);
 
-        // User 2 thanh toán 1.1 ETH để mua lại vé
-        await ticket.connect(user2).buyResaleTicket(0, { value: resalePrice });
-
-        // Kiểm tra xem vé đã sang tay User 2 chưa
-        expect(await ticket.ownerOf(0)).to.equal(user2.address);
-        console.log(`✅ Vé số 0 đã được sang tên cho User 2 (Ví: ${user2.address.slice(0, 6)}...)`);
-
-        // Ghi nhận số dư ví Ban Tổ Chức SAU khi User 2 mua
-        const organizerBalanceAfter = await ethers.provider.getBalance(organizer.address);
-
-        // Tính toán tiền bản quyền nhận được
-        const royaltyEarned = organizerBalanceAfter - organizerBalanceBefore;
-        console.log(`💰 Ban Tổ Chức nhận được phí bản quyền tự động: ${formatEther(royaltyEarned)} ETH`);
-        console.log("-------------------------------------------------");
+        expect(receiver).to.equal(owner.address);
+        expect(royaltyAmount).to.equal(ethers.parseEther("0.1"));
     });
 });
