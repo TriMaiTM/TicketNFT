@@ -125,13 +125,13 @@ const Marketplace: React.FC = () => {
           <div className="mb-10">
             <label className="text-xs font-bold uppercase tracking-widest text-outline mb-4 block">Category</label>
             <div className="flex flex-col gap-2">
-              <label className="flex items-center gap-3 p-3 rounded-xl bg-surface-container-high cursor-pointer hover:bg-surface-container-highest transition-colors">
-                <input defaultChecked className="rounded border-outline-variant bg-surface-container-lowest text-primary focus:ring-primary" type="checkbox" />
+              <label onClick={() => alert("Tính năng lọc theo thể loại đang phát triển")} className="flex items-center gap-3 p-3 rounded-xl bg-surface-container-high cursor-pointer hover:bg-surface-container-highest transition-colors">
+                <input readOnly checked className="rounded border-outline-variant bg-surface-container-lowest text-primary focus:ring-primary" type="checkbox" />
                 <span className="text-sm">Music & Concerts</span>
               </label>
             </div>
           </div>
-          <button className="mt-auto w-full py-4 border border-outline/30 rounded-xl font-bold hover:bg-surface-container-high transition-colors">
+          <button onClick={() => alert("Tính năng xóa bộ lọc đang phát triển")} className="mt-auto w-full py-4 border border-outline/30 rounded-xl font-bold hover:bg-surface-container-high transition-colors">
             Clear All Filters
           </button>
         </aside>
@@ -147,7 +147,7 @@ const Marketplace: React.FC = () => {
             <div className="flex gap-4">
               <div className="flex bg-surface-container-low rounded-full p-1 border border-outline-variant/10">
                 <button className="px-6 py-2 rounded-full bg-surface-container-high text-primary font-bold shadow-xl">Live Listings</button>
-                <button className="px-6 py-2 rounded-full text-on-surface-variant font-medium hover:text-on-surface transition-colors">Recent Sales</button>
+                <button onClick={() => alert("Tính năng Xem Lịch Sử Chợ đang phát triển")} className="px-6 py-2 rounded-full text-on-surface-variant font-medium hover:text-on-surface transition-colors">Recent Sales</button>
               </div>
             </div>
           </header>

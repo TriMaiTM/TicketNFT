@@ -7,7 +7,12 @@ try {
 } catch (e) {}
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.28",
+  solidity: {
+    version: "0.8.28",
+    settings: {
+      evmVersion: "cancun",
+    },
+  },
   networks: {
     hardhat: {
       chainId: 31337

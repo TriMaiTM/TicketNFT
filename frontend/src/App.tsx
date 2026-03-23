@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import EventDetail from './pages/EventDetail';
 import Marketplace from './pages/Marketplace';
 import MyTickets from './pages/MyTickets';
+import CreateEvent from './pages/CreateEvent';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/event/:id" element={<EventDetail />} />
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/my-tickets" element={<MyTickets />} />
+        <Route path="/create-event" element={<CreateEvent />} />
       </Routes>
     </div>
   );

@@ -22,6 +22,9 @@ const Header: React.FC = () => {
         <Link to="/my-tickets" className={getLinkClass("/my-tickets")}>My Tickets</Link>
       </div>
       <div className="flex items-center gap-4">
+        <Link to="/create-event" className="hidden lg:flex items-center text-sm font-bold text-on-surface-variant hover:text-primary transition-colors">
+          + Create Event
+        </Link>
         {!walletAddress ? (
             <button onClick={connectWallet} className="hidden lg:flex items-center gap-2 px-6 py-2 rounded-xl obsidian-gradient text-on-primary-fixed font-headline font-bold active:scale-95 duration-200 hover:opacity-80 transition-all">
                 Connect Wallet
